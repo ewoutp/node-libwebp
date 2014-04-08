@@ -227,6 +227,27 @@ function exec2(file, args /*, options, callback */) {
   return child;
 };
 
+exports.size = function(imgfile, callback) {
+  var ext = imgfile.substr(imgfile.lastIndexOf('.') + 1);
+  var binpath;
+  if( ext == 'webp' ) {
+    binpath = exports.dwebp.path;
+  } else {
+    binpath = exports.cwebp.path;
+  }
+  var args = ['-size', imgfile];	
+  var proc = exec2(binpath, args, {timeout:120000}, function(err, stdout, stderr) {
+    var result = {};
+    if (!err) {
+      var geometry = stdout.split(" ");
+      result.width = parseInt(geometry[0]);
+      result.height = parseInt(geometry[1]);
+    }
+    callback(err, result);
+  });
+  return proc;
+}
+
 exports.dwebp = function(args, timeout, callback) {
   var procopt = {encoding: 'binary'};
   if (typeof timeout === 'function') {

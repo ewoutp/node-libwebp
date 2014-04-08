@@ -561,6 +561,7 @@ static void HelpLong(void) {
   printf("  -q <float> ............. quality factor (0:small..100:big)\n");
   printf("  -alpha_q <int> ......... Transparency-compression quality "
          "(0..100).\n");
+  printf("  -size .................. Displays the size of in_file and exits\n");
   printf("  -preset <string> ....... Preset setting, one of:\n");
   printf("                            default, photo, picture,\n");
   printf("                            drawing, icon, text\n");
@@ -681,6 +682,8 @@ int main(int argc, const char *argv[]) {
   Metadata metadata;
   Stopwatch stop_watch;
 
+  int getsize = 0;
+
   MetadataInit(&metadata);
   WebPMemoryWriterInit(&memory_writer);
   if (!WebPPictureInit(&picture) ||
@@ -702,6 +705,8 @@ int main(int argc, const char *argv[]) {
     } else if (!strcmp(argv[c], "-H") || !strcmp(argv[c], "-longhelp")) {
       HelpLong();
       return 0;
+    } else if( !strcmp(argv[c], "-size") ) {
+      getsize = 1;
     } else if (!strcmp(argv[c], "-o") && c < argc - 1) {
       out_file = argv[++c];
     } else if (!strcmp(argv[c], "-d") && c < argc - 1) {
@@ -941,6 +946,11 @@ int main(int argc, const char *argv[]) {
     goto Error;
   }
   picture.progress_hook = (show_progress && !quiet) ? ProgressReport : NULL;
+
+  if( getsize>0 ) { //Display size and return
+    fprintf(stdout, "%d %d\n", picture.width, picture.height);
+    return 0;
+  }
 
   if (blend_alpha) {
     WebPBlendAlpha(&picture, background_color);

@@ -607,6 +607,7 @@ static void Help(void) {
          "  -yuv ........... save the raw YUV samples in flat layout\n"
          "\n"
          " Other options are:\n"
+         "  -size ........ displays the size of in_file and exits\n"
          "  -version  .... print version number and exit.\n"
          "  -nofancy ..... don't use the fancy YUV420 upscaler.\n"
          "  -nofilter .... disable in-loop filtering.\n"
@@ -647,6 +648,7 @@ int main(int argc, const char *argv[]) {
   int incremental = 0;
   int c;
   int jpeg_quality = 95;
+  int getsize = 0;
 
   if (!WebPInitDecoderConfig(&config)) {
     fprintf(stderr, "Library version mismatch!\n");
@@ -657,6 +659,8 @@ int main(int argc, const char *argv[]) {
     if (!strcmp(argv[c], "-h") || !strcmp(argv[c], "-help")) {
       Help();
       return 0;
+    } else if( !strcmp(argv[c], "-size") ) {
+      getsize = 1;
     } else if (!strcmp(argv[c], "-o") && c < argc - 1) {
       out_file = argv[++c];
     } else if (!strcmp(argv[c], "-alpha")) {
@@ -816,21 +820,26 @@ int main(int argc, const char *argv[]) {
     }
   }
 
-  if (out_file != NULL) {
-    fprintf(stderr, "Decoded %s. Dimensions: %d x %d %s. Format: %s. "
-                    "Now saving...\n",
-            in_file, output_buffer->width, output_buffer->height,
-            bitstream->has_alpha ? " (with alpha)" : "",
-            kFormatType[bitstream->format]);
-    ok = SaveOutput(output_buffer, format, out_file, jpeg_quality);
+  if( getsize>0 ) { //Display size and return
+    fprintf(stdout, "%d %d\n", output_buffer->width, output_buffer->height);
   } else {
-    fprintf(stderr, "File %s can be decoded "
-                    "(dimensions: %d x %d %s. Format: %s).\n",
-            in_file, output_buffer->width, output_buffer->height,
-            bitstream->has_alpha ? " (with alpha)" : "",
-            kFormatType[bitstream->format]);
-    fprintf(stderr, "Nothing written; "
-                    "use -o flag to save the result as e.g. PNG.\n");
+
+	  if (out_file != NULL) {
+		fprintf(stderr, "Decoded %s. Dimensions: %d x %d %s. Format: %s. "
+						"Now saving...\n",
+				in_file, output_buffer->width, output_buffer->height,
+				bitstream->has_alpha ? " (with alpha)" : "",
+				kFormatType[bitstream->format]);
+		ok = SaveOutput(output_buffer, format, out_file, jpeg_quality);
+	  } else {
+		fprintf(stderr, "File %s can be decoded "
+						"(dimensions: %d x %d %s. Format: %s).\n",
+				in_file, output_buffer->width, output_buffer->height,
+				bitstream->has_alpha ? " (with alpha)" : "",
+				kFormatType[bitstream->format]);
+		fprintf(stderr, "Nothing written; "
+						"use -o flag to save the result as e.g. PNG.\n");
+	  }
   }
  Exit:
   WebPFreeDecBuffer(output_buffer);
