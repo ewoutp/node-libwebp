@@ -1,0 +1,11 @@
+{
+	"name"        : "node-libwebp",
+	"description" : "A wrapper around Google's libwebp command line tools",
+	"version"     : "0.4.0",
+	"author"      : "Kevin Karsch <http://kevinkarsch.com>",
+	"engine"      : ["node >=0.8"],
+	"main"        : "app.js",
+	"dependencies": {
+		"express": "3.x.x"
+	}
+}
