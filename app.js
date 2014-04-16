@@ -13,34 +13,34 @@ app.configure(function() {
 require('./public/js/ddata.js');
 
 //Convert webp to jpeg (quality=95), resize width while maintaining aspect ratio
-libwebp.dwebp(['./public/img/a.webp', '-jpg', '95', '-scale', '400', '0', '-o', './public/img/a.jpg'], 
+libwebp.dwebp([__dirname + '/public/img/a.webp', '-jpg', '95', '-scale', '400', '0', '-o', __dirname + '/public/img/a.jpg'], 
 function(err, stdout){
   if (err) throw err;
 });
 
 //Convert webp to jpeg (quality=95), resize height while maintaining aspect ratio
-libwebp.dwebp(['./public/img/b.webp', '-jpg', '95', '-scale', '600', '0', '-o', './public/img/b.jpg'], 
+libwebp.dwebp([__dirname + '/public/img/b.webp', '-jpg', '95', '-scale', '600', '0', '-o', __dirname + '/public/img/b.jpg'], 
 function(err, stdout){
   if (err) throw err;
 });
 
 //Convert jpeg to webp (quality=80) and resize (disregard aspect ratio)
-libwebp.cwebp(['-resize', '300', '300', '-q', '80', './public/img/c.jpg', '-o', './public/img/c.webp'], 
+libwebp.cwebp(['-resize', '300', '300', '-q', '80', __dirname + '/public/img/c.jpg', '-o', __dirname + '/public/img/c.webp'], 
 function(err, stdout){
   if (err) throw err;
 });
 
 //Get image sizes
-libwebp.size('./public/img/a.webp', 
+libwebp.size(__dirname + '/public/img/a.webp', 
 function(err, size){
   if (err) throw err;
-  console.log('./public/img/a.webp has size: %d %d', size.width, size.height);
+  console.log(__dirname + '/public/img/a.webp has size: %d %d', size.width, size.height);
 });
 
-libwebp.size('./public/img/b.jpg', 
+libwebp.size(__dirname + '/public/img/b.jpg', 
 function(err, size){
   if (err) throw err;
-  console.log('./public/img/b.jpg has size: %d %d', size.width, size.height);
+  console.log(__dirname + '/public/img/b.jpg has size: %d %d', size.width, size.height);
 });
 
 //Use graphicsmagick to get image size (not used yet)
