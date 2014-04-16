@@ -130,7 +130,8 @@ function(err, stdout){
 
 
 var childproc = require('child_process'),
-    EventEmitter = require('events').EventEmitter;
+    EventEmitter = require('events').EventEmitter,
+    path = require('path');
 
 function exec2(file, args /*, options, callback */) {
   var options = { encoding: 'utf8'
@@ -260,7 +261,7 @@ exports.dwebp = function(args, timeout, callback) {
     procopt.timeout = timeout;
   return exec2(exports.dwebp.path, args, procopt, callback);
 }
-exports.dwebp.path = './build/Release/dwebp';
+exports.dwebp.path = path.join(__dirname, './build/Release/dwebp');
 
 exports.cwebp = function(args, timeout, callback) {
   var procopt = {encoding: 'binary'};
@@ -274,4 +275,4 @@ exports.cwebp = function(args, timeout, callback) {
     procopt.timeout = timeout;
   return exec2(exports.cwebp.path, args, procopt, callback);
 }
-exports.cwebp.path = './build/Release/cwebp';
+exports.cwebp.path = path.join(__dirname, './build/Release/cwebp');
