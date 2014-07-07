@@ -48,6 +48,7 @@
 #endif
 
 #include "webp/decode.h"
+#include "webp/encode.h"
 #include "./example_util.h"
 #include "./stopwatch.h"
 
@@ -76,7 +77,8 @@ typedef enum {
   BMP,
   TIFF,
   YUV,
-  ALPHA_PLANE_ONLY  // this is for experimenting only
+  ALPHA_PLANE_ONLY,  // this is for experimenting only
+  WEBP
 } OutputFileFormat;
 
 #ifdef HAVE_WINCODEC_H
@@ -517,6 +519,11 @@ static int WritePGMOrYUV(FILE* fout, const WebPDecBuffer* const buffer,
   return ok;
 }
 
+static int WriteWEBP(FILE* out_file, const WebPDecBuffer* const buffer, int quality) {
+  return 0;
+}
+
+
 static int SaveOutput(const WebPDecBuffer* const buffer,
                       OutputFileFormat format, const char* const out_file,
                       int jpeg_quality) {
@@ -569,6 +576,8 @@ static int SaveOutput(const WebPDecBuffer* const buffer,
     ok &= WritePGMOrYUV(fout, buffer, format);
   } else if (format == ALPHA_PLANE_ONLY) {
     ok &= WriteAlphaPlane(fout, buffer);
+  } else if (format == WEBP) {
+    ok &= WriteWEBP(fout, buffer);
   }
   if (fout != NULL && fout != stdout) {
     fclose(fout);

@@ -1,0 +1,13 @@
+{
+	"name"        : "node-libwebp-examples",
+	"description" : "Examples for node-libwp",
+	"version"     : "0.4.0",
+	"author"      : "Kevin Karsch <http://kevinkarsch.com>",
+	"engines": { "node": ">= 0.8.0" },
+	"main"        : "app.js",
+	"dependencies": {
+		"express": "3.x.x",
+		"gm": "1.x.x",
+		"imagemagick": "0.x.x"
+	}
+}

@@ -1,17 +1,11 @@
 {
 	"name"        : "node-libwebp",
 	"description" : "A wrapper around Google's libwebp command line tools",
-	"version"     : "0.4.0",
-	"author"      : "Kevin Karsch <http://kevinkarsch.com>",
+	"version"     : "0.5.0",
+	"author"      : "Kevin Karsch <http://kevinkarsch.com>, Ewout Prangsma",
 	"engines": { "node": ">= 0.8.0" },
-	"main"        : "app.js",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/kevinkarsch/node-libwebp.git"
-	},
-	"dependencies": {
-		"express": "3.x.x",
-		"gm": "1.x.x",
-		"imagemagick": "0.x.x"
+		"url": "https://github.com/ewoutp/node-libwebp.git"
 	}
 }
