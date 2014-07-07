@@ -1,7 +1,7 @@
 {
 	"name"        : "node-libwebp",
 	"description" : "A wrapper around Google's libwebp command line tools",
-	"version"     : "0.5.0",
+	"version"     : "0.5.1",
 	"author"      : "Kevin Karsch <http://kevinkarsch.com>, Ewout Prangsma",
 	"engines": { "node": ">= 0.8.0" },
 	"repository": {
