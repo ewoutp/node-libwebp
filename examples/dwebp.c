@@ -48,7 +48,6 @@
 #endif
 
 #include "webp/decode.h"
-#include "webp/encode.h"
 #include "./example_util.h"
 #include "./stopwatch.h"
 
@@ -77,8 +76,7 @@ typedef enum {
   BMP,
   TIFF,
   YUV,
-  ALPHA_PLANE_ONLY,  // this is for experimenting only
-  WEBP
+  ALPHA_PLANE_ONLY  // this is for experimenting only
 } OutputFileFormat;
 
 #ifdef HAVE_WINCODEC_H
@@ -249,38 +247,38 @@ static int WritePNG(FILE* out_file, const WebPDecBuffer* const buffer) {
 
 #if defined(WEBP_HAVE_JPEG) 
 static int WriteJPEG(FILE* out_file, const WebPDecBuffer* const buffer, int quality) {
-	const uint32_t width = buffer->width;
-	const uint32_t height = buffer->height;
-	uint8_t* const rgb = buffer->u.RGBA.rgba;
-	uint32_t i;
-	
-	struct jpeg_compress_struct cinfo;
-	struct jpeg_error_mgr       jerr;
-	cinfo.err = jpeg_std_error(&jerr);
-	jpeg_create_compress(&cinfo);
-	jpeg_stdio_dest(&cinfo, out_file);
+  const uint32_t width = buffer->width;
+  const uint32_t height = buffer->height;
+  uint8_t* const rgb = buffer->u.RGBA.rgba;
+  uint32_t i;
+  
+  struct jpeg_compress_struct cinfo;
+  struct jpeg_error_mgr       jerr;
+  cinfo.err = jpeg_std_error(&jerr);
+  jpeg_create_compress(&cinfo);
+  jpeg_stdio_dest(&cinfo, out_file);
  
-	cinfo.image_width      = width;
-	cinfo.image_height     = height;
-	cinfo.input_components = 3;
-	cinfo.in_color_space   = JCS_RGB;
+  cinfo.image_width      = width;
+  cinfo.image_height     = height;
+  cinfo.input_components = 3;
+  cinfo.in_color_space   = JCS_RGB;
 
-	jpeg_set_defaults(&cinfo);
-	jpeg_set_quality(&cinfo, quality, TRUE);
-	jpeg_start_compress(&cinfo, TRUE);
-	
-	//Write
+  jpeg_set_defaults(&cinfo);
+  jpeg_set_quality(&cinfo, quality, TRUE);
+  jpeg_start_compress(&cinfo, TRUE);
+  
+  //Write
     unsigned char *stride = (unsigned char *)malloc( width * 3);;
     JSAMPROW row_pointer[1];
-	for(i=0; i<height; i++) {
+  for(i=0; i<height; i++) {
         memcpy (stride, rgb + (i * width) * 3, width * 3);
         row_pointer[0] = stride;
         jpeg_write_scanlines(&cinfo, &stride, 1);
     }
-	jpeg_finish_compress(&cinfo);
+  jpeg_finish_compress(&cinfo);
     jpeg_destroy_compress(&cinfo);
-	free(stride);
-	return 1;
+  free(stride);
+  return 1;
 }
 #else    // !WEBP_HAVE_JPEG
 static int WriteJPEG(FILE* out_file, const WebPDecBuffer* const buffer, int quality) {
@@ -519,11 +517,6 @@ static int WritePGMOrYUV(FILE* fout, const WebPDecBuffer* const buffer,
   return ok;
 }
 
-static int WriteWEBP(FILE* out_file, const WebPDecBuffer* const buffer, int quality) {
-  return 0;
-}
-
-
 static int SaveOutput(const WebPDecBuffer* const buffer,
                       OutputFileFormat format, const char* const out_file,
                       int jpeg_quality) {
@@ -576,8 +569,6 @@ static int SaveOutput(const WebPDecBuffer* const buffer,
     ok &= WritePGMOrYUV(fout, buffer, format);
   } else if (format == ALPHA_PLANE_ONLY) {
     ok &= WriteAlphaPlane(fout, buffer);
-  } else if (format == WEBP) {
-    ok &= WriteWEBP(fout, buffer);
   }
   if (fout != NULL && fout != stdout) {
     fclose(fout);
@@ -833,22 +824,22 @@ int main(int argc, const char *argv[]) {
     fprintf(stdout, "%d %d\n", output_buffer->width, output_buffer->height);
   } else {
 
-	  if (out_file != NULL) {
-		fprintf(stderr, "Decoded %s. Dimensions: %d x %d %s. Format: %s. "
-						"Now saving...\n",
-				in_file, output_buffer->width, output_buffer->height,
-				bitstream->has_alpha ? " (with alpha)" : "",
-				kFormatType[bitstream->format]);
-		ok = SaveOutput(output_buffer, format, out_file, jpeg_quality);
-	  } else {
-		fprintf(stderr, "File %s can be decoded "
-						"(dimensions: %d x %d %s. Format: %s).\n",
-				in_file, output_buffer->width, output_buffer->height,
-				bitstream->has_alpha ? " (with alpha)" : "",
-				kFormatType[bitstream->format]);
-		fprintf(stderr, "Nothing written; "
-						"use -o flag to save the result as e.g. PNG.\n");
-	  }
+    if (out_file != NULL) {
+    fprintf(stderr, "Decoded %s. Dimensions: %d x %d %s. Format: %s. "
+            "Now saving...\n",
+        in_file, output_buffer->width, output_buffer->height,
+        bitstream->has_alpha ? " (with alpha)" : "",
+        kFormatType[bitstream->format]);
+    ok = SaveOutput(output_buffer, format, out_file, jpeg_quality);
+    } else {
+    fprintf(stderr, "File %s can be decoded "
+            "(dimensions: %d x %d %s. Format: %s).\n",
+        in_file, output_buffer->width, output_buffer->height,
+        bitstream->has_alpha ? " (with alpha)" : "",
+        kFormatType[bitstream->format]);
+    fprintf(stderr, "Nothing written; "
+            "use -o flag to save the result as e.g. PNG.\n");
+    }
   }
  Exit:
   WebPFreeDecBuffer(output_buffer);
